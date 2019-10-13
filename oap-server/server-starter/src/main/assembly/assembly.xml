@@ -26,14 +26,14 @@
     </formats>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/libs</outputDirectory>
+            <outputDirectory>${file.separator}libs</outputDirectory>
             <scope>runtime</scope>
         </dependencySet>
     </dependencySets>
     <fileSets>
         <fileSet>
             <directory>src/main/assembly</directory>
-            <outputDirectory>/config</outputDirectory>
+            <outputDirectory>${file.separator}config</outputDirectory>
             <includes>
                 <include>log4j2.xml</include>
                 <include>application.yml</include>
@@ -49,7 +49,7 @@
                 <include>component-libraries.yml</include>
                 <include>official_analysis.oal</include>
             </includes>
-            <outputDirectory>/config</outputDirectory>
+            <outputDirectory>${file.separator}config</outputDirectory>
         </fileSet>
     </fileSets>
 </assembly>

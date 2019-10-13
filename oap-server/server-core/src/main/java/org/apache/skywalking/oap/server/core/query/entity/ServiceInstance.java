@@ -30,6 +30,7 @@ public class ServiceInstance {
     @Setter private String name;
     private final List<Attribute> attributes;
     @Setter private Language language;
+    @Setter private String instanceUUID;
 
     public ServiceInstance() {
         this.attributes = new ArrayList<>();

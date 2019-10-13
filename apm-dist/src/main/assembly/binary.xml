@@ -28,7 +28,7 @@
     <fileSets>
         <fileSet>
             <directory>${project.basedir}/bin</directory>
-            <outputDirectory>/bin</outputDirectory>
+            <outputDirectory>${file.separator}bin</outputDirectory>
             <includes>
                 <include>*.sh</include>
                 <include>*.bat</include>
@@ -37,7 +37,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/../oap-server/server-starter/target/skywalking-oap-assembly/skywalking-oap/config</directory>
-            <outputDirectory>/config</outputDirectory>
+            <outputDirectory>${file.separator}config</outputDirectory>
             <includes>
                 <include>*.yml</include>
                 <include>*.xml</include>
@@ -47,19 +47,19 @@
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/../oap-server/server-starter/target/skywalking-oap-assembly/skywalking-oap/libs</directory>
-            <outputDirectory>/oap-libs</outputDirectory>
+            <outputDirectory>${file.separator}oap-libs</outputDirectory>
         </fileSet>
 
         <!-- Agent repackage into the dist -->
         <fileSet>
             <directory>${project.basedir}/../skywalking-agent</directory>
-            <outputDirectory>/agent</outputDirectory>
+            <outputDirectory>${file.separator}agent</outputDirectory>
         </fileSet>
 
         <!-- Release docs and licenses -->
         <fileSet>
             <directory>${project.basedir}/../</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>${file.separator}</outputDirectory>
             <includes>
                 <include>DISCLAIMER</include>
                 <include>CHANGES</include>
@@ -68,19 +68,19 @@
 
         <fileSet>
             <directory>${project.basedir}/release-docs</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>${file.separator}</outputDirectory>
         </fileSet>
     </fileSets>
-    <files>
-        <file>
-            <source>${project.basedir}/../apm-webapp/target/skywalking-webapp.jar</source>
-            <outputDirectory>/webapp</outputDirectory>
-            <fileMode>0644</fileMode>
-        </file>
-        <file>
-            <source>${project.basedir}/../apm-webapp/src/main/assembly/webapp.yml</source>
-            <outputDirectory>/webapp</outputDirectory>
-            <fileMode>0644</fileMode>
-        </file>
-    </files>
+<!--    <files>-->
+<!--        <file>-->
+<!--            <source>${project.basedir}/../apm-webapp/target/skywalking-webapp.jar</source>-->
+<!--            <outputDirectory>/webapp</outputDirectory>-->
+<!--            <fileMode>0644</fileMode>-->
+<!--        </file>-->
+<!--        <file>-->
+<!--            <source>${project.basedir}/../apm-webapp/src/main/assembly/webapp.yml</source>-->
+<!--            <outputDirectory>/webapp</outputDirectory>-->
+<!--            <fileMode>0644</fileMode>-->
+<!--        </file>-->
+<!--    </files>-->
 </assembly>
