@@ -37,6 +37,6 @@ public interface SpanListener {
      * Analysis point when the analysis core traverses the segment
      */
     enum Point {
-        Entry, Exit, Local, First, TraceIds
+        Entry, Exit, Local, First, TraceIds, Segment
     }
 }

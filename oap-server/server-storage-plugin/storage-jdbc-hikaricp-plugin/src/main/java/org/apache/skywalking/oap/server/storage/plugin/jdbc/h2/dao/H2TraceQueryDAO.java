@@ -26,6 +26,7 @@ import org.apache.skywalking.oap.server.core.query.entity.Span;
 import org.apache.skywalking.oap.server.core.query.entity.TraceBrief;
 import org.apache.skywalking.oap.server.core.query.entity.TraceState;
 import org.apache.skywalking.oap.server.core.storage.query.ITraceQueryDAO;
+import org.apache.skywalking.oap.server.core.storage.query.ITraceQueryOldDAO;
 import org.apache.skywalking.oap.server.library.client.jdbc.hikaricp.JDBCHikariCPClient;
 import org.apache.skywalking.oap.server.library.util.BooleanUtils;
 import org.elasticsearch.search.sort.SortOrder;
@@ -39,7 +40,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
-public class H2TraceQueryDAO implements ITraceQueryDAO {
+public class H2TraceQueryDAO implements ITraceQueryOldDAO {
     private JDBCHikariCPClient h2Client;
 
     public H2TraceQueryDAO(JDBCHikariCPClient h2Client) {

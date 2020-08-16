@@ -18,19 +18,27 @@
 
 package org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.segment;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.skywalking.apm.network.language.agent.UniqueId;
+import org.apache.skywalking.apm.network.language.agent.v2.SegmentObject;
+import org.apache.skywalking.apm.network.language.agent.v2.SpanObjectV2;
 import org.apache.skywalking.oap.server.core.Const;
 import org.apache.skywalking.oap.server.core.CoreModule;
 import org.apache.skywalking.oap.server.core.analysis.TimeBucket;
+import org.apache.skywalking.oap.server.core.analysis.manual.segment.SpanTag;
 import org.apache.skywalking.oap.server.core.cache.EndpointInventoryCache;
+import org.apache.skywalking.oap.server.core.config.ConfigService;
 import org.apache.skywalking.oap.server.core.source.Segment;
 import org.apache.skywalking.oap.server.core.source.SourceReceiver;
 import org.apache.skywalking.oap.server.library.module.ModuleManager;
 import org.apache.skywalking.oap.server.library.util.BooleanUtils;
 import org.apache.skywalking.oap.server.receiver.trace.provider.TraceServiceModuleConfig;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.decorator.SegmentCoreInfo;
+import org.apache.skywalking.oap.server.receiver.trace.provider.parser.decorator.SegmentDecorator;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.decorator.SpanDecorator;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.EntrySpanListener;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.FirstSpanListener;
@@ -46,18 +54,25 @@ public class SegmentSpanListener implements FirstSpanListener, EntrySpanListener
     private final SourceReceiver sourceReceiver;
     private final TraceSegmentSampler sampler;
     private final Segment segment = new Segment();
+    private final List<String> searchableTagKeys;
     private final EndpointInventoryCache serviceNameCacheService;
     private SAMPLE_STATUS sampleStatus = SAMPLE_STATUS.UNKNOWN;
     private int entryEndpointId = 0;
     private int firstEndpointId = 0;
     private String firstEndpointName = "";
+    private long startTimestamp;
+    private long endTimestamp;
+    private int duration;
+    private boolean isError;
 
-    private SegmentSpanListener(ModuleManager moduleManager, TraceSegmentSampler sampler) {
+    private SegmentSpanListener(ModuleManager moduleManager, TraceSegmentSampler sampler, List<String> searchableTagKeys) {
         this.sampler = sampler;
         this.sourceReceiver = moduleManager.find(CoreModule.NAME).provider().getService(SourceReceiver.class);
         this.serviceNameCacheService = moduleManager.find(CoreModule.NAME)
                                                     .provider()
                                                     .getService(EndpointInventoryCache.class);
+        this.searchableTagKeys = searchableTagKeys;
+
     }
 
     @Override
@@ -77,6 +92,7 @@ public class SegmentSpanListener implements FirstSpanListener, EntrySpanListener
         segment.setServiceId(segmentCoreInfo.getServiceId());
         segment.setServiceInstanceId(segmentCoreInfo.getServiceInstanceId());
         segment.setLatency((int) (segmentCoreInfo.getEndTime() - segmentCoreInfo.getStartTime()));
+        segment.setLatency(duration);
         segment.setStartTime(segmentCoreInfo.getStartTime());
         segment.setEndTime(segmentCoreInfo.getEndTime());
         segment.setIsError(BooleanUtils.booleanToValue(segmentCoreInfo.isError()));
@@ -91,6 +107,46 @@ public class SegmentSpanListener implements FirstSpanListener, EntrySpanListener
     @Override
     public void parseEntry(SpanDecorator spanDecorator, SegmentCoreInfo segmentCoreInfo) {
         entryEndpointId = spanDecorator.getOperationNameId();
+    }
+
+    public void parseSegment(SegmentDecorator segmentDecorator) {
+        SegmentObject segmentObject = segmentDecorator.getSegmentObjectV2();
+        if (sampleStatus.equals(SAMPLE_STATUS.UNKNOWN) || sampleStatus.equals(SAMPLE_STATUS.IGNORE)) {
+            if (sampler.shouldSample(segmentObject.getTraceSegmentId())) {
+                sampleStatus = SAMPLE_STATUS.SAMPLED;
+            } else {
+                sampleStatus = SAMPLE_STATUS.IGNORE;
+            }
+        }
+
+        if (sampleStatus.equals(SAMPLE_STATUS.IGNORE)) {
+            return;
+        }
+
+        segment.setTraceId(segmentObject.getTraceId());
+        segmentObject.getSpansList().forEach(span -> {
+            if (startTimestamp == 0 || startTimestamp > span.getStartTime()) {
+                startTimestamp = span.getStartTime();
+            }
+            if (span.getEndTime() > endTimestamp) {
+                endTimestamp = span.getEndTime();
+            }
+            if (!isError && span.getIsError()) {
+                isError = true;
+            }
+
+            appendSearchableTags(span);
+        });
+        final long accurateDuration = endTimestamp - startTimestamp;
+        duration = accurateDuration > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) accurateDuration;
+    }
+
+    private void appendSearchableTags(SpanObjectV2 span) {
+        span.getTagsList().forEach(tag -> {
+            if (searchableTagKeys.contains(tag.getKey())) {
+                segment.getTags().add(new SpanTag(tag.getKey(), tag.getValue()));
+            }
+        });
     }
 
     @Override
@@ -148,14 +204,19 @@ public class SegmentSpanListener implements FirstSpanListener, EntrySpanListener
 
     public static class Factory implements SpanListenerFactory {
         private final TraceSegmentSampler sampler;
+        private final List<String> searchTagKeys;
 
-        public Factory(int segmentSamplingRate) {
+        public Factory(ModuleManager moduleManager, int segmentSamplingRate) {
+            final ConfigService configService = moduleManager.find(CoreModule.NAME)
+                    .provider()
+                    .getService(ConfigService.class);
+            this.searchTagKeys = Arrays.asList(configService.getSearchableTracesTags().split(Const.COMMA));
             this.sampler = new TraceSegmentSampler(segmentSamplingRate);
         }
 
         @Override
         public SpanListener create(ModuleManager moduleManager, TraceServiceModuleConfig config) {
-            return new SegmentSpanListener(moduleManager, sampler);
+            return new SegmentSpanListener(moduleManager, sampler, searchTagKeys);
         }
     }
 }

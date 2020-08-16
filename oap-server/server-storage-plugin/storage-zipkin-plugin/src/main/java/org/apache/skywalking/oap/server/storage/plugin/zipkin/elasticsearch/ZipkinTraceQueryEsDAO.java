@@ -28,6 +28,7 @@ import lombok.Setter;
 import org.apache.skywalking.apm.util.StringUtil;
 import org.apache.skywalking.oap.server.core.Const;
 import org.apache.skywalking.oap.server.core.analysis.manual.segment.SegmentRecord;
+import org.apache.skywalking.oap.server.core.analysis.manual.segment.SpanTag;
 import org.apache.skywalking.oap.server.core.cache.ServiceInventoryCache;
 import org.apache.skywalking.oap.server.core.query.entity.BasicTrace;
 import org.apache.skywalking.oap.server.core.query.entity.KeyValue;
@@ -80,7 +81,8 @@ public class ZipkinTraceQueryEsDAO extends EsDAO implements ITraceQueryDAO {
     @Override
     public TraceBrief queryBasicTraces(long startSecondTB, long endSecondTB, long minDuration, long maxDuration,
         String endpointName, int serviceId, int serviceInstanceId, int endpointId, String traceId, int limit, int from,
-        TraceState traceState, QueryOrder queryOrder) throws IOException {
+        TraceState traceState, QueryOrder queryOrder,
+                                       final List<SpanTag> tags) throws IOException {
 
         SearchSourceBuilder sourceBuilder = SearchSourceBuilder.searchSource();
 

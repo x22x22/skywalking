@@ -50,6 +50,10 @@ public class SegmentDecorator implements StandardBuilder {
         return segmentObjectV2.getSpansCount();
     }
 
+    public SegmentObject getSegmentObjectV2(){
+        return this.segmentObjectV2;
+    }
+
     public SpanDecorator getSpans(int index) {
         if (isNull(spanDecorators[index])) {
             if (isOrigin) {

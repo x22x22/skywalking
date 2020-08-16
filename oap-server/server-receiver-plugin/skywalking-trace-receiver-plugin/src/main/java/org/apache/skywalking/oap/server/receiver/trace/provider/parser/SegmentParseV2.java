@@ -40,12 +40,7 @@ import org.apache.skywalking.oap.server.receiver.trace.provider.parser.decorator
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.decorator.SegmentCoreInfo;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.decorator.SegmentDecorator;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.decorator.SpanDecorator;
-import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.EntrySpanListener;
-import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.ExitSpanListener;
-import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.FirstSpanListener;
-import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.GlobalTraceIdsListener;
-import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.LocalSpanListener;
-import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.SpanListener;
+import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.*;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.standardization.ReferenceIdExchanger;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.standardization.SegmentStandardization;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.standardization.SegmentStandardizationWorker;
@@ -221,7 +216,7 @@ public class SegmentParseV2 {
         if (exchanged) {
             long minuteTimeBucket = TimeBucket.getMinuteTimeBucket(segmentCoreInfo.getStartTime());
             segmentCoreInfo.setMinuteTimeBucket(minuteTimeBucket);
-
+            notifySegmentListener(segmentDecorator);
             for (int i = 0; i < segmentDecorator.getSpansCount(); i++) {
                 SpanDecorator spanDecorator = segmentDecorator.getSpans(i);
 
@@ -292,6 +287,14 @@ public class SegmentParseV2 {
         });
     }
 
+    private void notifySegmentListener(SegmentDecorator segmentDecorator) {
+        spanListeners.forEach(listener -> {
+            if (listener.containsPoint(SpanListener.Point.Segment)) {
+                ((SegmentListener) listener).parseSegment(segmentDecorator);
+            }
+        });
+    }
+
     private void notifyGlobalsListener(UniqueId uniqueId) {
         spanListeners.forEach(listener -> {
             if (listener.containsPoint(SpanListener.Point.TraceIds)) {
@@ -311,13 +314,19 @@ public class SegmentParseV2 {
         @Setter
         private SegmentStandardizationWorker standardizationWorker;
         private final ModuleManager moduleManager;
-        private final SegmentParserListenerManager listenerManager;
+        @Setter
+        private SegmentParserListenerManager listenerManager;
         private final TraceServiceModuleConfig config;
 
         public Producer(ModuleManager moduleManager, SegmentParserListenerManager listenerManager,
                         TraceServiceModuleConfig config) {
             this.moduleManager = moduleManager;
             this.listenerManager = listenerManager;
+            this.config = config;
+        }
+        public Producer(ModuleManager moduleManager,
+                        TraceServiceModuleConfig config) {
+            this.moduleManager = moduleManager;
             this.config = config;
         }
 

@@ -22,6 +22,7 @@ public class Const {
     public static final int NONE = 0;
     public static final String ID_SPLIT = "_";
     public static final String LINE = "-";
+    public static final String COMMA = ",";
     public static final String SPACE = " ";
     public static final String KEY_VALUE_SPLIT = ",";
     public static final String ARRAY_SPLIT = "|";

@@ -30,6 +30,7 @@ import org.apache.skywalking.apm.network.language.agent.v2.SpanObjectV2;
 import org.apache.skywalking.oap.server.core.Const;
 import org.apache.skywalking.oap.server.core.CoreModule;
 import org.apache.skywalking.oap.server.core.analysis.manual.segment.SegmentRecord;
+import org.apache.skywalking.oap.server.core.analysis.manual.segment.SpanTag;
 import org.apache.skywalking.oap.server.core.cache.EndpointInventoryCache;
 import org.apache.skywalking.oap.server.core.cache.NetworkAddressInventoryCache;
 import org.apache.skywalking.oap.server.core.cache.ServiceInventoryCache;
@@ -113,11 +114,12 @@ public class TraceQueryService implements Service {
     public TraceBrief queryBasicTraces(final int serviceId, final int serviceInstanceId, final int endpointId,
         final String traceId, final String endpointName, final int minTraceDuration, int maxTraceDuration,
         final TraceState traceState, final QueryOrder queryOrder, final Pagination paging, final long startTB,
-        final long endTB) throws IOException {
+        final long endTB,
+        final List<SpanTag> tags) throws IOException {
         PaginationUtils.Page page = PaginationUtils.INSTANCE.exchange(paging);
 
         return getTraceQueryDAO().queryBasicTraces(startTB, endTB, minTraceDuration, maxTraceDuration, endpointName, serviceId, serviceInstanceId, endpointId, traceId, page
-            .getLimit(), page.getFrom(), traceState, queryOrder);
+            .getLimit(), page.getFrom(), traceState, queryOrder, tags);
     }
 
     public Trace queryTrace(final String traceId) throws IOException {

@@ -16,13 +16,13 @@
  *
  */
 
-package org.apache.skywalking.oap.server.core.storage.model;
+package org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener;
 
-import java.lang.reflect.Type;
+import org.apache.skywalking.oap.server.receiver.trace.provider.parser.decorator.SegmentDecorator;
 
-public interface DataTypeMapping {
-    /**
-     * Map the given typd and genericType of the field to the column type.
-     */
-    String transform(Class<?> type, Type genericType);
+/**
+ * SegmentListener for the whole segment. This has higher priority than other {@link SpanListener} implementation.
+ */
+public interface SegmentListener extends SpanListener {
+    void parseSegment(SegmentDecorator segmentDecorator);
 }

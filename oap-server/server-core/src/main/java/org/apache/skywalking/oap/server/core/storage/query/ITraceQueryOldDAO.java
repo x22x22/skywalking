@@ -16,30 +16,29 @@
  *
  */
 
-package org.apache.skywalking.oap.query.graphql.type;
+package org.apache.skywalking.oap.server.core.storage.query;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.apache.skywalking.oap.server.core.analysis.manual.segment.SegmentRecord;
 import org.apache.skywalking.oap.server.core.analysis.manual.segment.SpanTag;
-import org.apache.skywalking.oap.server.core.query.entity.Pagination;
 import org.apache.skywalking.oap.server.core.query.entity.QueryOrder;
+import org.apache.skywalking.oap.server.core.query.entity.Span;
+import org.apache.skywalking.oap.server.core.query.entity.TraceBrief;
 import org.apache.skywalking.oap.server.core.query.entity.TraceState;
+import org.apache.skywalking.oap.server.library.module.Service;
 
+import java.io.IOException;
 import java.util.List;
 
-@Getter
-@Setter
-public class TraceQueryCondition {
-    private String serviceId;
-    private String serviceInstanceId;
-    private String traceId;
-    private String endpointName;
-    private String endpointId;
-    private Duration queryDuration;
-    private int minTraceDuration;
-    private int maxTraceDuration;
-    private TraceState traceState;
-    private QueryOrder queryOrder;
-    private Pagination paging;
-    private List<SpanTag> tags;
+public interface ITraceQueryOldDAO extends Service {
+
+    TraceBrief queryBasicTraces(long startSecondTB, long endSecondTB, long minDuration, long maxDuration,
+        String endpointName, int serviceId, int serviceInstanceId, int endpointId, String traceId, int limit, int from,
+        TraceState traceState, QueryOrder queryOrder) throws IOException;
+
+    List<SegmentRecord> queryByTraceId(String traceId) throws IOException;
+
+    /**
+     * This method gives more flexible for unnative
+     */
+    List<Span> doFlexibleTraceQuery(String traceId) throws IOException;
 }

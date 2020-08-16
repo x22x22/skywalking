@@ -31,6 +31,7 @@ import org.apache.skywalking.oap.server.core.query.entity.Span;
 import org.apache.skywalking.oap.server.core.query.entity.TraceBrief;
 import org.apache.skywalking.oap.server.core.query.entity.TraceState;
 import org.apache.skywalking.oap.server.core.storage.query.ITraceQueryDAO;
+import org.apache.skywalking.oap.server.core.storage.query.ITraceQueryOldDAO;
 import org.apache.skywalking.oap.server.library.util.BooleanUtils;
 import org.apache.skywalking.oap.server.storage.plugin.influxdb.InfluxClient;
 import org.apache.skywalking.oap.server.storage.plugin.influxdb.base.RecordDAO;
@@ -48,7 +49,7 @@ import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.regex;
 import static org.influxdb.querybuilder.BuiltQuery.QueryBuilder.select;
 
 @Slf4j
-public class TraceQuery implements ITraceQueryDAO {
+public class TraceQuery implements ITraceQueryOldDAO {
     private final InfluxClient client;
 
     public TraceQuery(InfluxClient client) {

@@ -131,7 +131,7 @@ public class StorageEsInstaller extends ModelInstaller {
                 String matchCName = MatchCNameBuilder.INSTANCE.build(columnDefine.getColumnName().getName());
 
                 Map<String, Object> originalColumn = new HashMap<>();
-                originalColumn.put("type", columnTypeEsMapping.transform(columnDefine.getType()));
+                originalColumn.put("type", columnTypeEsMapping.transform(columnDefine.getType(), columnDefine.getGenericType()));
                 originalColumn.put("copy_to", matchCName);
                 properties.put(columnDefine.getColumnName().getName(), originalColumn);
 
@@ -146,7 +146,7 @@ public class StorageEsInstaller extends ModelInstaller {
                 properties.put(columnDefine.getColumnName().getName(), column);
             } else {
                 Map<String, Object> column = new HashMap<>();
-                column.put("type", columnTypeEsMapping.transform(columnDefine.getType()));
+                column.put("type", columnTypeEsMapping.transform(columnDefine.getType(), columnDefine.getGenericType()));
                 properties.put(columnDefine.getColumnName().getName(), column);
             }
         }

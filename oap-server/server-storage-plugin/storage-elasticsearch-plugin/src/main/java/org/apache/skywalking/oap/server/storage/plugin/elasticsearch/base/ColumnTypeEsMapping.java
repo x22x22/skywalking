@@ -21,10 +21,14 @@ package org.apache.skywalking.oap.server.storage.plugin.elasticsearch.base;
 import org.apache.skywalking.oap.server.core.analysis.metrics.IntKeyLongValueHashMap;
 import org.apache.skywalking.oap.server.core.storage.model.DataTypeMapping;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
+
 public class ColumnTypeEsMapping implements DataTypeMapping {
 
     @Override
-    public String transform(Class<?> type) {
+    public String transform(Class<?> type, Type genericType) {
         if (Integer.class.equals(type) || int.class.equals(type)) {
             return "integer";
         } else if (Long.class.equals(type) || long.class.equals(type)) {
@@ -37,6 +41,9 @@ public class ColumnTypeEsMapping implements DataTypeMapping {
             return "text";
         } else if (byte[].class.equals(type)) {
             return "binary";
+        } else if (List.class.isAssignableFrom(type)) {
+            final Type elementType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+            return transform((Class<?>) elementType, elementType);
         } else {
             throw new IllegalArgumentException("Unsupported data type: " + type.getName());
         }

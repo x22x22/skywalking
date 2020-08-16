@@ -122,6 +122,15 @@ public class CoreModuleConfig extends ModuleConfig {
      */
     private boolean activeExtraModelColumns = false;
 
+    /**
+     * Define the set of span tag keys, which should be searchable through the GraphQL.
+     *
+     * @since 8.2.0
+     */
+    @Setter
+    @Getter
+    private String searchableTracesTags = DEFAULT_SEARCHABLE_TAG_KEYS;
+
     public CoreModuleConfig() {
         this.downsampling = new ArrayList<>();
     }
@@ -157,4 +166,19 @@ public class CoreModuleConfig extends ModuleConfig {
          */
         Aggregator
     }
+
+    /**
+     * SkyWalking Java Agent provides the recommended tag keys for other language agents or SDKs. This field declare the
+     * recommended keys should be searchable.
+     */
+    private static final String DEFAULT_SEARCHABLE_TAG_KEYS = String.join(
+            Const.COMMA,
+            "http.method",
+            "status_code",
+            "db.type",
+            "db.instance",
+            "mq.queue",
+            "mq.topic",
+            "mq.broker"
+    );
 }

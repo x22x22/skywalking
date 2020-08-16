@@ -80,7 +80,8 @@ public class TraceModuleProvider extends ModuleProvider {
         moduleConfig.setDbLatencyThresholdsAndWatcher(thresholds);
         moduleConfig.setUninstrumentedGatewaysConfig(uninstrumentedGatewaysConfig);
 
-        segmentProducerV2 = new SegmentParseV2.Producer(getManager(), listenerManager(), moduleConfig);
+//        segmentProducerV2 = new SegmentParseV2.Producer(getManager(), listenerManager(), moduleConfig);
+        segmentProducerV2 = new SegmentParseV2.Producer(getManager(), moduleConfig);
 
         this.registerServiceImplementation(
             ISegmentParserService.class, new SegmentParserServiceImpl(segmentProducerV2));
@@ -93,7 +94,7 @@ public class TraceModuleProvider extends ModuleProvider {
             listenerManager.add(new ServiceMappingSpanListener.Factory());
             listenerManager.add(new ServiceInstanceMappingSpanListener.Factory());
         }
-        listenerManager.add(new SegmentSpanListener.Factory(moduleConfig.getSampleRate()));
+        listenerManager.add(new SegmentSpanListener.Factory(getManager(), moduleConfig.getSampleRate()));
 
         return listenerManager;
     }
@@ -113,6 +114,7 @@ public class TraceModuleProvider extends ModuleProvider {
         try {
             dynamicConfigurationService.registerConfigChangeWatcher(thresholds);
             dynamicConfigurationService.registerConfigChangeWatcher(uninstrumentedGatewaysConfig);
+            segmentProducerV2.setListenerManager(listenerManager());
 
             grpcHandlerRegister.addHandler(new TraceSegmentReportServiceHandler(segmentProducerV2, getManager()));
 

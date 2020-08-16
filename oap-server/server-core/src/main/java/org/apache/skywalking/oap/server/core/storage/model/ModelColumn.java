@@ -18,18 +18,21 @@
 
 package org.apache.skywalking.oap.server.core.storage.model;
 
+import java.lang.reflect.Type;
 import lombok.Getter;
 
 @Getter
 public class ModelColumn {
     private final ColumnName columnName;
     private final Class<?> type;
+    private final Type genericType;
     private final boolean matchQuery;
     private final boolean content;
 
-    public ModelColumn(ColumnName columnName, Class<?> type, boolean matchQuery, boolean content) {
+    public ModelColumn(ColumnName columnName, Class<?> type, Type genericType, boolean matchQuery, boolean content) {
         this.columnName = columnName;
         this.type = type;
+        this.genericType = genericType;
         this.matchQuery = matchQuery;
         this.content = content;
     }

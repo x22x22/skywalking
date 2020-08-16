@@ -20,6 +20,7 @@ package org.apache.skywalking.oap.server.receiver.trace.mock;
 
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
+import org.apache.skywalking.apm.network.common.KeyStringValuePair;
 import org.apache.skywalking.apm.network.language.agent.SpanLayer;
 import org.apache.skywalking.apm.network.language.agent.SpanType;
 import org.apache.skywalking.apm.network.language.agent.UniqueId;
@@ -30,7 +31,7 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 class ServiceAMock {
 
-    static String REST_ENDPOINT = "/dubbox-case/case/dubbox-rest";
+    static String REST_ENDPOINT = "/dubbox-case/case/dubbox-rest/404-test";
     static String DUBBO_ENDPOINT = "org.skywaking.apm.testcase.dubbo.services.GreetService.doBusiness()";
     static String DUBBO_ADDRESS = "DubboIPAddress:1000";
     private final RegisterMock registerMock;
@@ -82,6 +83,9 @@ class ServiceAMock {
             span.setOperationNameId(2);
         }
         span.setIsError(false);
+        span.addTags(KeyStringValuePair.newBuilder().setKey("http.method").setValue("get").build());
+        span.addTags(KeyStringValuePair.newBuilder().setKey("status_code").setValue("404").build());
+        span.addTags(KeyStringValuePair.newBuilder().setKey("status_code").setValue("200").build());
         return span;
     }
 

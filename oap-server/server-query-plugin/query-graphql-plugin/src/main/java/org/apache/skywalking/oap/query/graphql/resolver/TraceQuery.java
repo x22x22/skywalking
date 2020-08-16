@@ -81,7 +81,7 @@ public class TraceQuery implements GraphQLQueryResolver {
         QueryOrder queryOrder = condition.getQueryOrder();
         Pagination pagination = condition.getPaging();
 
-        return getQueryService().queryBasicTraces(serviceId, serviceInstanceId, endpointId, traceId, endpointName, minDuration, maxDuration, traceState, queryOrder, pagination, startSecondTB, endSecondTB);
+        return getQueryService().queryBasicTraces(serviceId, serviceInstanceId, endpointId, traceId, endpointName, minDuration, maxDuration, traceState, queryOrder, pagination, startSecondTB, endSecondTB, condition.getTags());
     }
 
     public Trace queryTrace(final String traceId) throws IOException {
