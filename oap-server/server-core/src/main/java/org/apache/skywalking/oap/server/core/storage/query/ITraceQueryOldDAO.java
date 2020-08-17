@@ -19,7 +19,6 @@
 package org.apache.skywalking.oap.server.core.storage.query;
 
 import org.apache.skywalking.oap.server.core.analysis.manual.segment.SegmentRecord;
-import org.apache.skywalking.oap.server.core.analysis.manual.segment.SpanTag;
 import org.apache.skywalking.oap.server.core.query.entity.QueryOrder;
 import org.apache.skywalking.oap.server.core.query.entity.Span;
 import org.apache.skywalking.oap.server.core.query.entity.TraceBrief;

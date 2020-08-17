@@ -40,7 +40,13 @@ import org.apache.skywalking.oap.server.receiver.trace.provider.parser.decorator
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.decorator.SegmentCoreInfo;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.decorator.SegmentDecorator;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.decorator.SpanDecorator;
-import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.*;
+import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.EntrySpanListener;
+import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.ExitSpanListener;
+import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.LocalSpanListener;
+import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.SpanListener;
+import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.FirstSpanListener;
+import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.SegmentListener;
+import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.GlobalTraceIdsListener;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.standardization.ReferenceIdExchanger;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.standardization.SegmentStandardization;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.standardization.SegmentStandardizationWorker;
@@ -324,6 +330,7 @@ public class SegmentParseV2 {
             this.listenerManager = listenerManager;
             this.config = config;
         }
+
         public Producer(ModuleManager moduleManager,
                         TraceServiceModuleConfig config) {
             this.moduleManager = moduleManager;
