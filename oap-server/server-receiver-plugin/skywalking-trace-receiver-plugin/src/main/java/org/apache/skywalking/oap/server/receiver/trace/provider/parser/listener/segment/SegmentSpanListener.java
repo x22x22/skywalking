@@ -45,12 +45,13 @@ import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.GlobalTraceIdsListener;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.SpanListener;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.SpanListenerFactory;
+import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.SegmentListener;
 
 /**
  * SegmentSpanListener forwards the segment raw data to the persistence layer with the query required conditions.
  */
 @Slf4j
-public class SegmentSpanListener implements FirstSpanListener, EntrySpanListener, GlobalTraceIdsListener {
+public class SegmentSpanListener implements FirstSpanListener, EntrySpanListener, SegmentListener, GlobalTraceIdsListener {
     private final SourceReceiver sourceReceiver;
     private final TraceSegmentSampler sampler;
     private final Segment segment = new Segment();
@@ -109,6 +110,7 @@ public class SegmentSpanListener implements FirstSpanListener, EntrySpanListener
         entryEndpointId = spanDecorator.getOperationNameId();
     }
 
+    @Override
     public void parseSegment(SegmentDecorator segmentDecorator) {
         SegmentObject segmentObject = segmentDecorator.getSegmentObjectV2();
         if (sampleStatus.equals(SAMPLE_STATUS.UNKNOWN) || sampleStatus.equals(SAMPLE_STATUS.IGNORE)) {
@@ -123,7 +125,7 @@ public class SegmentSpanListener implements FirstSpanListener, EntrySpanListener
             return;
         }
 
-        segment.setTraceId(segmentObject.getTraceId());
+//        segment.setTraceId(segmentObject.getTraceId());
         segmentObject.getSpansList().forEach(span -> {
             if (startTimestamp == 0 || startTimestamp > span.getStartTime()) {
                 startTimestamp = span.getStartTime();

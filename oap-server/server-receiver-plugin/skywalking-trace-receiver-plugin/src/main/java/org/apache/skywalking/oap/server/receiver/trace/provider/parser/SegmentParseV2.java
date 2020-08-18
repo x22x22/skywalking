@@ -295,7 +295,7 @@ public class SegmentParseV2 {
 
     private void notifySegmentListener(SegmentDecorator segmentDecorator) {
         spanListeners.forEach(listener -> {
-            if (listener.containsPoint(SpanListener.Point.Segment)) {
+            if (listener.containsPoint(SpanListener.Point.First)) {
                 ((SegmentListener) listener).parseSegment(segmentDecorator);
             }
         });
