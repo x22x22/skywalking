@@ -33,10 +33,10 @@
         <logger name="org.apache.http" level="INFO"/>
         <logger name="org.apache.skywalking.oap.server.core.alarm.AlarmStandardPersistence" level="DEBUG"/>
         <logger name="org.apache.skywalking.oap.server.core" level="INFO"/>
-        <logger name="org.apache.skywalking.oap.server.core.remote.client" level="DEBUG"/>
+        <logger name="org.apache.skywalking.oap.server.core.remote.client" level="INFO"/>
         <logger name="org.apache.skywalking.oap.server.library.buffer" level="INFO"/>
         <logger name="org.apache.skywalking.oap.server.receiver.so11y" level="DEBUG"/>
-        <Root level="DEBUG">
+        <Root level="INFO">
             <AppenderRef ref="Console"/>
         </Root>
     </Loggers>

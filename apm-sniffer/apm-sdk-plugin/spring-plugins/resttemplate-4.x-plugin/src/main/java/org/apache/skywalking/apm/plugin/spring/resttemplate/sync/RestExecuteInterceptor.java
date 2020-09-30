@@ -29,6 +29,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
 public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor {
@@ -37,6 +38,7 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         MethodInterceptResult result) throws Throwable {
         final URI requestURL = (URI) allArguments[0];
         final HttpMethod httpMethod = (HttpMethod) allArguments[1];
+        final HttpHeaders httpHeaders = (HttpHeaders) allArguments[2];
         final ContextCarrier contextCarrier = new ContextCarrier();
 
         String remotePeer = requestURL.getHost() + ":" + (requestURL.getPort() > 0 ? requestURL.getPort() : "https".equalsIgnoreCase(requestURL
@@ -48,6 +50,7 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         Tags.URL.set(span, requestURL.getScheme() + "://" + requestURL.getHost() + ":" + requestURL.getPort() + requestURL
             .getPath());
         Tags.HTTP.METHOD.set(span, httpMethod.toString());
+        Tags.HTTP.HEADERS.set(span, "httpHeaders.toString()");
         SpanLayer.asHttp(span);
 
         objInst.setSkyWalkingDynamicField(contextCarrier);

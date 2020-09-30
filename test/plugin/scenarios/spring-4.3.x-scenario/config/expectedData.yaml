@@ -125,6 +125,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.3.x-scenario/create/'}
               - {key: http.method, value: POST}
+              - {key: http.headers, value: null}
             refs:
               - {parentEndpointId: 0, parentEndpoint: /case/resttemplate, networkAddressId: 0,
                  entryEndpointId: 0, refType: CrossProcess, parentSpanId: 2, parentTraceSegmentId: not null,
@@ -286,6 +287,7 @@ segmentItems:
             tags:
               - {key: http.method, value: GET}
               - {key: url, value: 'http://localhost:8080/spring-4.3.x-scenario/case/spring3/'}
+              - {key: http.headers, value: 'mock_header=[mock_value]'}
           - operationName: /spring-4.3.x-scenario/create/
             operationId: 0
             parentSpanId: 0

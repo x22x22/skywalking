@@ -103,7 +103,6 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
             }
         }
 
-
         Field headersField = Request.class.getDeclaredField("headers");
         Field modifiersField = Field.class.getDeclaredField("modifiers");
         modifiersField.setAccessible(true);

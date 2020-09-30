@@ -31,6 +31,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.spring.commons.EnhanceCacheObjects;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
 public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor {
@@ -39,6 +40,7 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         MethodInterceptResult result) throws Throwable {
         final URI requestURL = (URI) allArguments[0];
         final HttpMethod httpMethod = (HttpMethod) allArguments[1];
+        final HttpHeaders httpHeaders = (HttpHeaders) allArguments[2];
         final ContextCarrier contextCarrier = new ContextCarrier();
 
         String remotePeer = requestURL.getHost() + ":" + (requestURL.getPort() > 0 ? requestURL.getPort() : "https".equalsIgnoreCase(requestURL
@@ -51,6 +53,7 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         Tags.URL.set(span, requestURL.getScheme() + "://" + requestURL.getHost() + ":" + requestURL.getPort() + requestURL
             .getPath());
         Tags.HTTP.METHOD.set(span, httpMethod.toString());
+        Tags.HTTP.HEADERS.set(span, httpHeaders.toString());
         SpanLayer.asHttp(span);
         Object[] cacheValues = new Object[3];
         cacheValues[0] = formatURIPath;

@@ -83,6 +83,8 @@ public final class Tags {
         public static final StringTag PARAMS = new StringTag(11, "http.params", true);
 
         public static final StringTag BODY = new StringTag(13, "http.body");
+
+        public static final StringTag HEADERS = new StringTag(14, "http.headers");
     }
 
     /**

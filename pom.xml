@@ -546,8 +546,7 @@
                         **/*.sh,
                         **/*.bat,
                         **/*.yml,
-                        **/*.yaml,
-                        **/*.xml
+                        **/*.yaml
                     </resourceIncludes>
                     <excludes>
                         **/target/generated-test-sources/**,

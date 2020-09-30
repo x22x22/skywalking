@@ -85,7 +85,7 @@ core:
     # But, being activated, user could see the name in the storage entities, which make users easier to use 3rd party tool, such as Kibana->ES, to query the data by themselves.
     activeExtraModelColumns: ${SW_CORE_ACTIVE_EXTRA_MODEL_COLUMNS:false}
     # Define the set of span tag keys, which should be searchable through the GraphQL.
-    searchableTracesTags: ${SW_SEARCHABLE_TAG_KEYS:http.method,status_code,db.type,db.instance,mq.queue,mq.topic,mq.broker}
+    searchableTracesTags: ${SW_SEARCHABLE_TAG_KEYS:http.method,http.params,http.body,http.headers,status_code,db.type,db.instance,mq.queue,mq.topic,mq.broker}
 
 storage:
   selector: ${SW_STORAGE:h2}
